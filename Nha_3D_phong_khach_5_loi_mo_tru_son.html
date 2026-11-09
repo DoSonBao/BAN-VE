@@ -1,0 +1,204 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mô hình nhà 3D • chỉ tính phần tường trên gạch</title><style>
+:root{font-family:Arial,system-ui,sans-serif;color:#18283b;background:#f3f6fa}*{box-sizing:border-box}body{margin:0}.top{background:#11283e;color:white;padding:17px 24px}.top h1{font-size:22px;margin:0 0 7px}.top p{margin:0;color:#cbd9e5;font-size:13px}.wrap{display:grid;grid-template-columns:minmax(340px,430px) minmax(420px,1fr);gap:16px;padding:16px;max-width:1600px;margin:auto}.panel{background:white;border:1px solid #e1e8ee;border-radius:13px;box-shadow:0 2px 12px #243a5020;padding:16px}.panel h2{font-size:17px;margin:0 0 12px}.help{color:#657789;font-size:12px;line-height:1.6}.r{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}.r label,.field label{display:block;font-size:12px;font-weight:bold;color:#52677a;margin-bottom:5px}select{width:100%;border:1px solid #d3dfea;border-radius:7px;padding:9px 7px;background:white;font-size:13px}input{width:100%;border:1px solid #d3dfea;border-radius:7px;padding:9px 7px;font-size:14px;min-width:0;background:white}input:focus{outline:2px solid #6caecf;border-color:transparent}.room{border-top:1px solid #edf1f5;padding-top:10px;margin-top:11px}.roomname{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:bold;margin-bottom:7px}.chip{width:12px;height:12px;border-radius:3px;display:inline-block}.roomgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.roomgrid label{font-size:11px;font-weight:600;color:#647487}.roomgrid input{padding:8px 5px;font-size:13px}.openings{background:#f4f8fc;border:1px solid #e0ebf3;border-radius:8px;padding:9px;margin-top:9px}.openingtitle{font-weight:bold;font-size:12px;color:#315773;margin-bottom:6px}.openrow{display:grid;grid-template-columns:1.1fr 0.8fr 0.8fr 1fr;gap:6px;margin-top:6px}.openrow label{font-size:10px;color:#51687c;display:block;margin-bottom:3px}.openrow input,.openrow select{width:100%;padding:7px 5px;border:1px solid #cbdbe7;border-radius:6px;font-size:12px;background:white}.sill{margin:5px 0 9px;padding:7px;border-left:3px solid #4a94b8;background:#eaf4f9}.sill label{font-size:11px;color:#315773}.sill input{max-width:160px}.scrolly{max-height:62vh;overflow:auto;padding-right:7px}.view{min-height:530px;position:relative;background:linear-gradient(155deg,#f9fdff,#eaf1f7);border-radius:10px;overflow:hidden}canvas{width:100%;height:520px;display:block;cursor:grab}.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}button{border:0;border-radius:8px;padding:9px 13px;cursor:pointer;background:#1b6e99;color:white;font-weight:600;font-size:12px}button.secondary{background:#e6eef5;color:#244964}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.metric{border:1px solid #dce6ef;border-radius:9px;padding:10px;background:#f9fbfd}.metric strong{display:block;font-size:19px;margin-top:5px}.metric span{font-size:11px;color:#617283}.tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:660px}.tbl th,.tbl td{padding:7px;border-bottom:1px solid #e7edf2;text-align:right}.tbl th:first-child,.tbl td:first-child{text-align:left}.notice{padding:11px;border-left:3px solid #d99a28;background:#fff9ed;font-size:12px;line-height:1.65;margin:10px 0}.bottomnote{font-size:12px;color:#627287;line-height:1.6}details{margin-top:10px}summary{cursor:pointer;font-size:13px;font-weight:700}.foot{font-size:12px;color:#607286;margin-top:13px}@media(max-width:900px){.wrap{grid-template-columns:1fr}.sill{margin:5px 0 9px;padding:7px;border-left:3px solid #4a94b8;background:#eaf4f9}.sill label{font-size:11px;color:#315773}.sill input{max-width:160px}.scrolly{max-height:none}.view{min-height:380px}canvas{height:420px}.metrics{grid-template-columns:1fr 1fr 1fr}.roomgrid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style></head><body><div class="top"><h1>MÔ HÌNH NHÀ 3D • PHÒNG KHÁCH: CỬA CHÍNH + 3 CỬA PHÒNG + LỐI BẾP</h1><p>Mặt bằng theo sơ đồ nhà của bạn • tường trên sơn, tường dưới ốp gạch • không cần cài ứng dụng</p></div><main class="wrap"><section class="panel"><h2>1. Thông số nhà</h2><div class="r"><div><label>Dài nhà (m)</label><input type="number" min="0" step="0.01" id="houseL" placeholder="Chưa đo"></div><div><label>Rộng nhà (m)</label><input type="number" min="0" step="0.01" id="houseW" placeholder="Chưa đo"></div><div><label>Cao mặc định (m)</label><input type="number" min="0" step="0.01" id="houseH" placeholder="VD: 3"></div></div><div class="notice"><b>Đúng kết cấu nhà trong ảnh:</b> gạch men ốp nửa dưới, phía trên là tường sơn. Điền chiều cao mép trên gạch tính từ sàn (m), KHÔNG phải chiều cao gạch viên. Phần trần tôn/nhựa không đưa vào diện tích sơn tường. Những phòng chưa đo cứ để trống.</div><div class="r"><div><label>Chiều cao ốp gạch mặc định (m)</label><input id="tileDefault" type="number" min="0" step="0.01" placeholder="Chưa đo"></div><div><label>Hệ số bù hao (%)</label><input id="wastePreview" type="number" min="0" max="100" step="1" placeholder="10"></div><div><label>Tính trần</label><select id="includeCeil"><option value="no">Không (trần hiện có)</option><option value="yes">Có sơn trần</option></select></div></div><h2>2. Phần Phòng 1 nhô ra & hiên trước</h2><div class="notice" style="background:#eff8f0;border-left-color:#54895b"><b>Bố cục đã cập nhật:</b> Phòng 1 nhô về phía sân trước, ngang mép ngoài của hiên nhà. Hiên nằm bên cạnh Phòng 1; đi qua mép hiên và mặt trước Phòng 1 mới tới sân. Phòng 1 là không gian có tường; hiên/sân không tự cộng vào diện tích sơn trong nhà.</div><div class="r"><div><label>Độ sâu hiên trước (m)</label><input type="number" id="porchDepth" min="0.1" step="0.1" value="2"></div><div><label>Phòng 1 nhô ra (m)</label><input type="number" id="room1Extension" min="0.1" step="0.1" value="2"></div><div><label>Hiện sân trước</label><select id="showYard"><option value="yes">Có</option><option value="no">Không</option></select></div></div><p class="help">Phòng 1 nhô 2 m về phía sân trước, ngang mép hiên 2 m; các phòng khác vẫn giữ bố cục ban đầu. Bạn có thể chỉnh 2 con số này. Số đo chưa có cứ để trống.</p><h2>3. Phòng khách & lối thông xuống bếp</h2><div class="notice" style="background:#eaf5ff;border-left-color:#2679a8"><b>Bố cục mới:</b> Vách ngăn giữa phòng khách và bếp đặt ngang khoảng <b>giữa Phòng 3</b>. Trên vách có <b>lối thông</b> đi xuống bếp (không phải cửa đóng). Phần mở sẽ được trừ khỏi vùng tường sơn của <b>cả hai phòng</b>, nếu có đủ kích thước và cao độ gạch.</div><div class="r"><div><label>Rộng lối thông (m)</label><input id="passageW" type="number" min="0.1" step="0.05" value="1.2"></div><div><label>Cao lối thông (m)</label><input id="passageH" type="number" min="0.1" step="0.05" value="2.4"></div><div><label>Vị trí trên vách (%)</label><input id="passagePos" type="number" min="0" max="100" step="1" value="25"></div></div><p class="help">Lối thông mở từ nền lên; vị trí % chỉ thay đổi chỗ lối đi trên vách, <b>không</b> đổi diện tích sơn. Giá trị 1,2 × 2,4 m là ví dụ để nhập lại sau khi đo. Không nhập lặp lối đi này vào mục Cửa đi D1/D2 hoặc “Trừ thêm vùng sơn”.</p><h2>4. Các cửa cần trừ tại PHÒNG KHÁCH</h2><div class="notice" style="background:#eef8f3;border-left-color:#26866a"><b>5 lối mở của phòng khách:</b> ① cửa chính phía hiên, ② cửa Phòng 1, ③ cửa Phòng 2, ④ cửa Phòng 3 và ⑤ lối đi xuống bếp (đã nhập ở mục 3). Không nhập các cửa này lần nữa vào D1/D2 của phòng khách hoặc “Trừ thêm”. Mỗi cửa được tính theo phần nằm trên gạch ốp; chưa biết số đo thì để trống.</div><div id="livingEntries" class="openings" style="background:#f5faf8"></div><p class="help">Bốn cửa đầu đều tính từ sàn. Lối đi bếp đã có mục riêng. Cửa chính và 3 cửa phòng sẽ được trừ trên <b>mặt tường phía phòng khách</b>; để tính mặt trong Phòng 1–3, hãy nhập cửa tương ứng tại chính phòng đó (nếu muốn sơn mặt đó).</p><h2>5. Kích thước từng phòng & phần gạch ốp</h2><div id="rooms" class="scrolly"></div><div class="bar" style="margin-top:14px"><button id="save">Lưu số đo</button><button id="export" class="secondary">Xuất dữ liệu JSON</button><button id="reset" class="secondary">Xóa các số đo</button></div><p class="help">Các số đo được lưu trong trình duyệt hiện tại. Dùng “Xuất dữ liệu JSON” để gửi cho mình cập nhật bản vẽ chính xác.</p></section><section class="panel"><h2>6. Mô hình 3D sơ bộ</h2><div class="bar"><button id="left" class="secondary">↶ Xoay trái</button><button id="right" class="secondary">↷ Xoay phải</button><button id="zoomout" class="secondary">− Thu nhỏ</button><button id="zoomin" class="secondary">+ Phóng to</button><button id="top" class="secondary">Nhìn từ trên</button><button id="iso" class="secondary">Góc 3D</button></div><div class="view"><canvas id="canvas"></canvas></div><div style="display:flex;gap:14px;align-items:center;font-size:12px;padding:9px 0"><span style="color:#aa5a19">🟧 D1 / D2: cửa đi</span><span style="color:#0870a9">🟦 S1 / S2: cửa sổ</span></div><div class="notice" id="modelNote">Mô hình thể hiện đúng thứ tự và vị trí tương đối của các phòng theo sơ đồ tay. Khi chưa có đủ số đo, tỷ lệ phòng chỉ là minh họa, chưa dùng để thi công.</div><h2>7. Diện tích sơn từng phòng (trừ 5 lối mở)</h2><p class="help">Công thức: Tường phía trên gạch − phần cửa đi giao vùng sơn − phần cửa sổ giao vùng sơn − <b>4 cửa phòng khách (cửa chính + 3 cửa phòng)</b> − <b>lối đi mở giữa khách/bếp</b> − vùng loại trừ khác. <b>Cửa phải chọn tường và nhập đủ số đo mới được trừ.</b></p><p class="help" id="paintStatus"></p><div class="metrics"><div class="metric"><span>Tường phía trên gạch (1 lớp)</span><strong id="net">0 m²</strong></div><div class="metric"><span>Trần sơn (nếu chọn)</span><strong id="ceil">0 m²</strong></div><div class="metric"><span>Diện tích thi công (theo số lớp)</span><strong id="layers">0 m²</strong></div></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Khu vực</th><th>Tường trước trừ</th><th>Trừ cửa đi</th><th>Trừ cửa sổ</th><th>Trừ lối đi</th><th>Trừ khác</th><th>Còn sơn (m²)</th><th>Trạng thái</th></tr></thead><tbody id="results"></tbody></table></div><details><summary>Định mức sơn để tính số lít dự kiến</summary><div class="r"><div><label>Phủ (m²/lít/lớp)</label><input type="number" step="0.1" id="coverage" placeholder="VD: 10"></div><div><label>Số lớp</label><input type="number" step="1" min="1" id="coats" value="2"></div><div><label>Hao hụt (%)</label><input type="number" step="1" min="0" id="waste" value="10"></div></div><p id="liters" class="bottomnote"></p></details><p class="foot"><b>Cách tính đúng cho nhà ốp gạch:</b> tường cần sơn = 2 × (dài + rộng) × (cao phòng − cao ốp gạch) − phần cửa đi/cửa sổ giao với vùng tường sơn − phần lối đi mở giữa khách/bếp − phần trừ khác. Với cửa đi tính từ sàn; cửa sổ tính từ cao độ bệ cửa. Không trừ toàn bộ cửa nằm ở phần gạch. Phòng chưa đủ số đo sẽ không cộng vào tổng. Nếu tường có mảng không ốp gạch hoặc cao độ gạch khác nhau theo từng bức, nên đo từng bức và điều chỉnh sau.</p></section></main><script>
+const config=[['p1','Phòng 1','#77bca8',3.7,3.7],['p2','Phòng 2','#89afd6',3.7,3.4],['p3','Phòng 3','#c4a2db',3.7,3.4],['gap','Khu gạch chéo / chưa đo','#cfb97f',null,null],['wc','Phòng vệ sinh','#e5a99e',null,null],['bath','Phòng tắm','#a9ced8',null,null],['living','Phòng khách','#a9c6e8',null,null],['kitchen','Phòng bếp','#eac794',null,null]];
+// Existing hand-written wall figures are not reliable as floor plan dimensions; start all empty.
+let values=JSON.parse(localStorage.getItem('house3d-data')||'{}');if(values.porchDepth==null) values.porchDepth='2';if(values.room1Extension==null) values.room1Extension='2';if(values.passageW==null)values.passageW='1.2';if(values.passageH==null)values.passageH='2.4';if(values.passagePos==null)values.passagePos='25';let yaw=-Math.PI/4,topDown=false,zoom=1;
+const $=s=>document.getElementById(s),num=v=>{let n=parseFloat(v);return Number.isFinite(n)&&n>0?n:null},fmt=x=>x.toLocaleString('vi-VN',{maximumFractionDigits:2});
+const livingDoors=[['main','Cửa chính (hiên → khách)','top',50],['p1','Cửa vào Phòng 1','left',15],['p2','Cửa vào Phòng 2','left',45],['p3','Cửa vào Phòng 3','left',76]];
+function livingDoorStats(r){
+ let area=0,details=[],warnings=[];
+ for(const [key,label,wall,defaultPos] of livingDoors){
+  let width=num(values['ld_'+key+'_w']),height=num(values['ld_'+key+'_h']);
+  if(!width&&!height) {warnings.push(label+': chưa có kích thước');continue;}
+  if(!width||!height||!r.h||r.tile===null){warnings.push(label+': chưa đủ số đo chiều rộng/cao hoặc cao tường/gạch');continue;}
+  const wallLength=wall==='left'?r.l:r.w;
+  if(wallLength&&width>wallLength){warnings.push(label+': rộng hơn cạnh tường đã nhập, cần kiểm tra');continue;}
+  const overlap=Math.max(0,Math.min(r.h,height)-r.tile);
+  const deduct=width*overlap;area+=deduct;
+  details.push({key,label,wall,width,height,deduct,pos:Math.min(100,Math.max(0,Number(values['ld_'+key+'_pos']??defaultPos)))})
+ }
+ return {area,details,warnings};
+}
+function renderLivingEntries(){
+ const root=$('livingEntries');
+ root.innerHTML=livingDoors.map(([key,label,wall,def])=>`<div class="openrow" style="grid-template-columns:1.8fr .8fr .8fr .8fr;align-items:end;margin:8px 0;padding-bottom:8px;border-bottom:1px solid #d9ebe3"><div><label><b>${label}</b></label><div style="font-size:11px;color:#466756">${key==='main'?'Tường phía HIÊN':'Tường phía DÃY PHÒNG'}</div></div><div><label>Rộng (m)</label><input type="number" min="0" step="0.01" placeholder="Chưa đo" data-livedoor="${key}" data-field="w" value="${values['ld_'+key+'_w']??''}"></div><div><label>Cao (m)</label><input type="number" min="0" step="0.01" placeholder="Chưa đo" data-livedoor="${key}" data-field="h" value="${values['ld_'+key+'_h']??''}"></div><div><label>Vị trí (%)</label><input type="number" min="0" max="100" step="1" data-livedoor="${key}" data-field="pos" value="${values['ld_'+key+'_pos']??def}"></div></div>`).join('');
+ root.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{values['ld_'+el.dataset.livedoor+'_'+el.dataset.field]=el.value;update()}));
+}
+function renderInputs(){renderLivingEntries();let holder=$('rooms');holder.innerHTML='';for(let [id,label,color] of config){let div=document.createElement('div');div.className='room';div.innerHTML=`<div class="roomname"><span class="chip" style="background:${color}"></span><input style="font-weight:bold;flex:1" data-name="${id}" aria-label="Tên phòng" value="${(values[id+'name']||label).replace(/"/g,'&quot;')}"></div><div class="roomgrid">${[['l','Dài (m)'],['w','Rộng (m)'],['h','Cao (m)'],['tile','Cao ốp gạch (m)'],['door','Trừ thêm vùng sơn (m²)']].map(([key,t])=>`<div><label>${t}</label><input type="number" min="0" step="0.01" placeholder="..." data-id="${id}" data-key="${key}" value="${values[id+key]??''}"></div>`).join('')}</div><div class="openings"><div class="openingtitle">${id==='living'?'🪟 Cửa sổ (cửa đi của phòng khách nhập ở mục 4)':'🚪 Cửa đi · 🪟 Cửa sổ (tối đa 2 mỗi loại)'}</div>${(id==='living'?[['s1','Cửa sổ 1'],['s2','Cửa sổ 2']]:[['d1','Cửa đi 1'],['d2','Cửa đi 2'],['s1','Cửa sổ 1'],['s2','Cửa sổ 2']]).map(([code,label])=>`<div class="openrow"><div><label>${label} · tường</label><select data-id="${id}" data-key="${code}wall"><option value="">Chưa đặt</option>${[['top','Trên'],['bottom','Dưới'],['left','Trái'],['right','Phải']].map(([v,t])=>`<option value="${v}" ${values[id+code+'wall']===v?'selected':''}>${t}</option>`).join('')}</select></div><div><label>Rộng (m)</label><input type="number" min="0" step="0.01" placeholder="..." data-id="${id}" data-key="${code}w" value="${values[id+code+'w']??''}"></div><div><label>Cao (m)</label><input type="number" min="0" step="0.01" placeholder="..." data-id="${id}" data-key="${code}h" value="${values[id+code+'h']??''}"></div><div><label>Vị trí (%)</label><input type="number" min="0" max="100" step="1" placeholder="50" data-id="${id}" data-key="${code}pos" value="${values[id+code+'pos']??'50'}"></div></div>${code.startsWith('s')?`<div class="sill"><label>Chiều cao bệ ${label.toLowerCase()} tính từ sàn (m)</label><input type="number" min="0" step="0.01" placeholder="Chưa đo" data-id="${id}" data-key="${code}sill" value="${values[id+code+'sill']??''}"></div>`:''}`).join('')}</div>`;holder.appendChild(div)}document.querySelectorAll('#rooms input,#rooms select').forEach(input=>input.addEventListener('input',e=>{let t=e.target;if(t.dataset.name){values[t.dataset.name+'name']=t.value}else{values[t.dataset.id+t.dataset.key]=t.value} update()}));for(let id of ['houseL','houseW','houseH','tileDefault','coverage','coats','waste','wastePreview','includeCeil','porchDepth','room1Extension','showYard','passageW','passageH','passagePos']){if(values[id]!=null)$(id).value=values[id];$(id).addEventListener('input',()=>{values[id]=$(id).value;if(id==='wastePreview'){values.waste=$(id).value;$('waste').value=$(id).value;}if(id==='waste'){$('wastePreview').value=$(id).value;}update()})}}
+function roomData(id){
+ const H=num(values[id+'h'])||num(values.houseH);
+ const tileText=values[id+'tile'];const defaultText=values.tileDefault;
+ const tile=tileText!==undefined&&tileText!==''?Math.max(0,Number(tileText)):(defaultText!==undefined&&defaultText!==''?Math.max(0,Number(defaultText)):null);
+ let openings=0,doors=0,windows=0,openingDetails=[],openingWarnings=[];
+ for(let code of (id==='living'?['s1','s2']:['d1','d2','s1','s2'])){
+   let width=num(values[id+code+'w']),height=num(values[id+code+'h']);
+   let wall=values[id+code+'wall'];
+   let isWindow=code.startsWith('s');
+   let sillRaw=values[id+code+'sill'];
+   if(!width&&!height&&!wall)continue;
+   if(!wall||!width||!height){openingWarnings.push(`${code.toUpperCase()}: thiếu tường đặt cửa hoặc kích thước`);continue;}
+   if(isWindow&&(sillRaw===undefined||sillRaw==='')){openingWarnings.push(`${code.toUpperCase()}: chưa nhập chiều cao bệ cửa sổ`);continue;}
+   if(!H||tile===null){openingWarnings.push(`${code.toUpperCase()}: thiếu chiều cao tường hoặc ốp gạch`);continue;}
+   let bottom=isWindow?Math.max(0,Number(sillRaw)):0;
+   // Only deduct the vertical overlap between each opening and the PAINTABLE region [tile,H]
+   let overlap=Math.max(0,Math.min(H,bottom+height)-Math.max(tile,bottom));
+   let deduction=width*overlap;
+   openings+=deduction;
+   if(isWindow)windows+=deduction;else doors+=deduction;
+   openingDetails.push({code,wall,width,height,bottom,overlap,deduction,isWindow});
+ }
+ return {l:num(values[id+'l']),w:num(values[id+'w']),h:H,tile,openings,doors,windows,openingDetails,openingWarnings,other:Math.max(0,Number(values[id+'door'])||0),name:values[id+'name']||config.find(e=>e[0]===id)[1]};
+}
+function passageInfo(id,r){
+ if(id!=='living'&&id!=='kitchen')return {area:0,valid:true};
+ const width=num(values.passageW),height=num(values.passageH);
+ if(!width||!height||!r.h||r.tile===null||!r.w)return {area:0,valid:false};
+ // It is a shared interior wall. Each side is measured as a separate room face.
+ const actualWidth=Math.min(width,r.w);
+ const paintedHeight=Math.max(0,Math.min(height,r.h)-r.tile);
+ return {area:actualWidth*paintedHeight,valid:true};
+}
+function calculate(){let total=0,ceiling=0,count=0,rows='',unknown=0,warnings=[];
+ for(let [id] of config){let r=roomData(id),ok=!!(r.l&&r.w&&r.h&&r.tile!==null&&r.tile<r.h);
+ let gross=ok?2*(r.l+r.w)*(r.h-r.tile):null;
+ let pass=passageInfo(id,r);
+ let livingExtra=id==='living'?livingDoorStats(r):{area:0,details:[],warnings:[]};
+ let wall=ok?Math.max(0,gross-r.doors-r.windows-livingExtra.area-(pass.valid?pass.area:0)-r.other):null;
+ if(ok&&livingExtra.warnings.length)warnings.push(r.name+': '+livingExtra.warnings.join('; '));
+ if(ok&&!pass.valid&&(id==='living'||id==='kitchen'))warnings.push(r.name+': chưa đủ dữ liệu lối đi');
+ let ceil=r.l&&r.w?r.l*r.w:null;
+ if(ok){total+=wall;count++} else unknown++;
+ if(ceil!==null && values.includeCeil==='yes')ceiling+=ceil;
+ if(r.openingWarnings.length)warnings.push(r.name+': '+r.openingWarnings.join('; '));
+ const n=v=>ok?fmt(v):'—';
+ rows+=`<tr><td><b>${r.name.replace(/</g,'&lt;')}</b></td><td>${n(gross)}</td><td style="color:#aa5a19">${n(r.doors+livingExtra.area)}</td><td style="color:#0870a9">${n(r.windows)}</td><td>${n(pass.valid?pass.area:0)}</td><td>${n(r.other)}</td><td><b>${n(wall)}</b></td><td>${!ok?'Thiếu số đo':(r.openingWarnings.length||livingExtra.warnings.length||!pass.valid)?'⚠ Thiếu số đo cửa/lối đi':'✓ Đã tính'}</td></tr>`;
+ }
+ $('results').innerHTML=rows;
+ let coats=num(values.coats)||2,waste=Math.max(0,parseFloat(values.waste)||0);
+ $('net').textContent=fmt(total)+' m²';$('ceil').textContent=fmt(ceiling)+' m²';$('layers').textContent=fmt(total*coats)+' m²-lớp';
+ let coverage=num(values.coverage);
+ $('liters').textContent=coverage?`Sơn tường: ${fmt(total*coats/coverage*(1+waste/100))} lít cho ${coats} lớp, cộng ${waste}% hao hụt (${count}/8 khu vực đã đủ số đo). Chưa gồm sơn lót và sơn trần.`:'Nhập định mức phủ của hãng sơn, số lớp và hao hụt để tính số lít. Trần không tự động tính vào sơn tường.';
+ $('paintStatus').innerHTML=`Đã tính <b>${count}/8</b> khu vực. ${unknown} khu vực chưa đủ số đo. ${warnings.length?'<br><b style="color:#a45b18">⚠ Chưa trừ một số cửa:</b> '+warnings.map(x=>x.replace(/</g,'&lt;')).join(' | '):'<br><span style="color:#20734d">Các cửa đã nhập đủ thông tin được trừ theo vùng giao với phần sơn.</span>'}`;
+}
+const canvas=$('canvas'),ctx=canvas.getContext('2d');function polygon(points,fill,stroke='#a1b1c1',line=1){ctx.beginPath();ctx.moveTo(...points[0]);for(let p of points.slice(1))ctx.lineTo(...p);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=line;ctx.stroke()}function rgba(hex,alpha){let h=hex.replace('#','');return `rgba(${parseInt(h.substring(0,2),16)},${parseInt(h.substring(2,4),16)},${parseInt(h.substring(4,6),16)},${alpha})`}
+function makeRooms(){
+ let a=config.map(([id,name,color])=>({id,name,color,r:roomData(id)}));
+ let left=a.slice(0,6),right=a.slice(6),safe=(v,f)=>v||f;
+ let porch=Math.max(.1,num(values.porchDepth)||2),extension=Math.max(.1,num(values.room1Extension)||2);
+ let lw=Math.max(...left.map(o=>safe(o.r.w,3.4))),rw=Math.max(...right.map(o=>safe(o.r.w,8)));
+ let leftH=left.slice(0,4).reduce((sum,o)=>sum+safe(o.r.l,3.2),0)+Math.max(safe(left[4].r.l,2.2),safe(left[5].r.l,2.2));
+ let y1=safe(left[0].r.l,3.2),y2=y1+safe(left[1].r.l,3.2),y3=y2+safe(left[2].r.l,3.2);
+ // Living/kitchen dividing line aligns with the middle of Bedroom 3 (not at its bottom).
+ let dividerY=y2+safe(left[2].r.l,3.2)*.5;
+ let rightEnd=Math.max(leftH, dividerY+safe(right[1].r.l,8));
+ let height=Math.max(leftH,rightEnd),width=lw+rw;
+ let houseL=num(values.houseL),houseW=num(values.houseW);
+ let xf=(houseW||width)/width,yf=(houseL||height)/height;
+ let rooms=[],y=0;
+ for(let o of left.slice(0,4)){let rh=safe(o.r.l,3.2)*yf;rooms.push({...o,x:0,y,w:lw*xf,h:rh});y+=rh}
+ let bh=Math.max(safe(left[4].r.l,2.2),safe(left[5].r.l,2.2))*yf;
+ rooms.push({...left[4],x:0,y,w:lw*xf/2,h:bh});rooms.push({...left[5],x:lw*xf/2,y,w:lw*xf/2,h:bh});
+ let divide=dividerY*yf, porchD=porch*yf, rightX=lw*xf, rightW=rw*xf;
+ rooms.push({...right[0],x:rightX,y:porchD,w:rightW,h:Math.max(.5,divide-porchD)});
+ rooms.push({...right[1],x:rightX,y:divide,w:rightW,h:Math.max(.5,height*yf-divide)});
+ let front=extension*yf;
+ if(Math.abs(front-porchD)>.01){let first=rooms[0];first.y=porchD-front;first.h+=front-porchD;}
+ return {rooms,width:width*xf,height:height*yf,porch:{x:rightX,y:0,w:rightW,h:porchD},yard:{x:0,y:-2.1*yf,w:width*xf,h:2.1*yf},divide,passage:{wallY:divide,x:rightX,w:rightW}};
+}
+function draw(){let rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);let W=rect.width,H=rect.height;ctx.clearRect(0,0,W,H);let {rooms,width,height,porch,yard,passage}=makeRooms();let depth=2.4;let point=(x,y,z)=>{let xx=(x-width/2),yy=(y-height/2);if(topDown)return [xx,yy];let cx=Math.cos(yaw),sx=Math.sin(yaw);let a=xx*cx-yy*sx,b=xx*sx+yy*cx;return [a,b*.58-z*.85]};let all=[];for(let x of [0,width])for(let y of [Math.min(0,rooms[0].y,values.showYard==='no'?0:yard.y),height])for(let z of [0,depth])all.push(point(x,y,z));let minX=Math.min(...all.map(p=>p[0])),maxX=Math.max(...all.map(p=>p[0])),minY=Math.min(...all.map(p=>p[1])),maxY=Math.max(...all.map(p=>p[1]));let scale=Math.min((W-65)/(maxX-minX),(H-75)/(maxY-minY))*zoom;let tx=W/2-(minX+maxX)/2*scale,ty=H/2-(minY+maxY)/2*scale;let P=(x,y,z)=>{let p=point(x,y,z);return[p[0]*scale+tx,p[1]*scale+ty]};// Open-air front yard and porch are intentionally not enclosed by 3D room walls.
+ const baseRect=(o,fill,stroke)=>polygon([P(o.x,o.y,0),P(o.x+o.w,o.y,0),P(o.x+o.w,o.y+o.h,0),P(o.x,o.y+o.h,0)],fill,stroke,1.5);
+ if(values.showYard!=='no'){baseRect(yard,'#dcebd8','#91af94');let pt=P(yard.x+yard.w/2,yard.y+yard.h/2,0);ctx.textAlign='center';ctx.fillStyle='#426c4d';ctx.font='bold 13px Arial';ctx.fillText('SÂN TRƯỚC',...pt)}
+ baseRect(porch,'#f3d5a5','#d09c58');let hp=P(porch.x+porch.w/2,porch.y+porch.h/2,0);ctx.textAlign='center';ctx.fillStyle='#855317';ctx.font='bold 13px Arial';ctx.fillText('HIÊN NHÀ · '+fmt(num(values.porchDepth)||2)+' m',...hp);
+ let wallThick=.12;rooms.sort((a,b)=>((a.y+a.x)*Math.sin(yaw+1))-((b.y+b.x)*Math.sin(yaw+1)));for(let o of rooms){let {x,y,w,h,color,r}=o;let z=topDown?0:Math.min(3.5,r.h||depth);polygon([P(x,y,0),P(x+w,y,0),P(x+w,y+h,0),P(x,y+h,0)],rgba(color,.52),'#f1f4f7',.4);if(!topDown){let zTile=Math.min(z,Math.max(0,r.tile===null?z*.37:r.tile));
+ const band=(ax,ay,bx,by,lo,hi,fill)=>polygon([P(ax,ay,lo),P(ax,ay,hi),P(bx,by,hi),P(bx,by,lo)],fill,'#a9bac9',.55);
+ for(let side of [[x,y,x+w,y],[x+w,y,x+w,y+h],[x+w,y+h,x,y+h],[x,y+h,x,y]]){
+   let passWall=(o.id==='living'&&Math.abs(side[1]-(y+h))<.01&&Math.abs(side[3]-(y+h))<.01)
+     ||(o.id==='kitchen'&&Math.abs(side[1]-y)<.01&&Math.abs(side[3]-y)<.01);
+   let pw=num(values.passageW),ph=num(values.passageH);
+   if(passWall&&pw&&ph){
+     let rW=Math.min(w*.9,pw*(w/(r.w||8)));
+     let t=Math.min(1,Math.max(0,(parseFloat(values.passagePos)||0)/100));
+     let xStart=x+Math.max(0,Math.min(w-rW,w*t-rW/2)),xEnd=xStart+rW;
+     let from=side[0],to=side[2], yy=side[1];
+     let segments=[[Math.min(from,to),xStart],[xEnd,Math.max(from,to)]];
+     for(let [s0,s1] of segments){if(s1-s0>.01){band(s0,yy,s1,yy,0,zTile,'#d4dee6');band(s0,yy,s1,yy,zTile,z,'#f5f6ed')}}
+     // Upper lintel remains only when passage does not reach ceiling.
+     let zPass=Math.min(z,Math.max(0,ph));
+     if(zPass<z-.01)band(xStart,yy,xEnd,yy,zPass,z,'#f5f6ed');
+     continue;
+   }
+   band(...side,0,zTile,'#d4dee6');band(...side,zTile,z,'#f5f6ed');
+ }
+}let c=P(x+w/2,y+h/2,0);ctx.fillStyle='#172f44';ctx.font=`bold ${Math.min(14,Math.max(10,11*zoom))}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';let name=o.r.name;let fs=ctx.measureText(name).width;if(fs>Math.max(70,w*scale*.62)){ctx.font='bold 10px Arial'}ctx.fillText(name,c[0],c[1]-6);ctx.fillStyle='#3b5265';ctx.font='11px Arial';ctx.fillText(r.l&&r.w?`${fmt(r.l)} × ${fmt(r.w)} m`:'Chưa đo',c[0],c[1]+9)}// Vẽ cửa trên đúng mặt phẳng tường với cao độ thực tế; đường viền trắng/đen giúp dễ nhận biết.
+for(let o of rooms){
+  for(let code of ['d1','d2','s1','s2']){
+    let wall=values[o.id+code+'wall'],opW=num(values[o.id+code+'w']),opH=num(values[o.id+code+'h']);
+    if(!wall||!opW||!opH)continue;
+    let isWindow=code.startsWith('s'),sill=Number(values[o.id+code+'sill'])||0;
+    let lo=isWindow?Math.max(0,sill):0, hi=Math.min(o.r.h||2.6,lo+opH);
+    if(hi<=lo)continue;
+    let rawPos=parseFloat(values[o.id+code+'pos']);
+    let pos=Math.max(0,Math.min(1,(Number.isFinite(rawPos)?rawPos:50)/100));
+    let {x,y,w,h}=o;
+    let length=(wall==='top'||wall==='bottom')?w:h;
+    let span=Math.min(length*.92,opW);
+    let start=Math.min(length-span,Math.max(0,length*pos-span/2));
+    let A,B;
+    if(wall==='top'){A=[x+start,y];B=[x+start+span,y]}
+    if(wall==='bottom'){A=[x+start,y+h];B=[x+start+span,y+h]}
+    if(wall==='left'){A=[x,y+start];B=[x,y+start+span]}
+    if(wall==='right'){A=[x+w,y+start];B=[x+w,y+start+span]}
+    if(!A||!B)continue;
+    let pts=[P(...A,lo),P(...B,lo),P(...B,hi),P(...A,hi)];
+    const color=isWindow?'#2a9fda':'#e88434';
+    if(topDown){
+      ctx.beginPath();ctx.moveTo(...P(...A,0));ctx.lineTo(...P(...B,0));
+      ctx.lineWidth=9;ctx.strokeStyle='#fff';ctx.stroke();ctx.lineWidth=6;ctx.strokeStyle=color;ctx.stroke();
+    }else{
+      polygon(pts,isWindow?'rgba(39,157,215,.87)':'rgba(238,132,41,.90)','#152b3b',2.5);
+      if(isWindow){ctx.beginPath();ctx.moveTo(...P((A[0]+B[0])/2,(A[1]+B[1])/2,lo));ctx.lineTo(...P((A[0]+B[0])/2,(A[1]+B[1])/2,hi));ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}
+    }
+    let mid=P((A[0]+B[0])/2,(A[1]+B[1])/2,topDown?0:(lo+hi)/2);
+    ctx.font='bold 11px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+    let label=code.toUpperCase();let tWidth=ctx.measureText(label).width;
+    ctx.fillStyle='rgba(255,255,255,.95)';ctx.fillRect(mid[0]-tWidth/2-4,mid[1]-10,tWidth+8,19);
+    ctx.fillStyle='#20344b';ctx.fillText(label,mid[0],mid[1]);
+  }
+}
+// Four dedicated living-room doors: entrance from porch + three bedroom doors.
+{
+ const living=rooms.find(o=>o.id==='living');
+ if(living){
+  const doors=livingDoorStats(living.r).details;
+  for(const d of doors){
+   const {x,y,w,h}=living;
+   let len=d.wall==='top'?w:h;
+   // Door placements are visual schematic only, independent from actual widths used in paint deductions.
+   const span=Math.min(len*.25,Math.max(.18,d.width*(d.wall==='top'?w/(living.r.w||8):h/(living.r.l||8))));
+   let start=Math.max(0,Math.min(len-span,len*d.pos/100-span/2));
+   let A=d.wall==='top'?[x+start,y]:[x,y+start];
+   let B=d.wall==='top'?[x+start+span,y]:[x,y+start+span];
+   let upper=topDown?0:Math.min(living.r.h||2.6,d.height);
+   const face=[P(...A,0),P(...B,0),P(...B,upper),P(...A,upper)];
+   if(topDown){ctx.beginPath();ctx.moveTo(...P(...A,0));ctx.lineTo(...P(...B,0));ctx.strokeStyle='white';ctx.lineWidth=11;ctx.stroke();ctx.strokeStyle='#db6b21';ctx.lineWidth=7;ctx.stroke();}
+   else polygon(face,'rgba(230,126,44,.94)','#613718',2.5);
+   const m=P((A[0]+B[0])/2,(A[1]+B[1])/2,topDown?0:upper*.55);
+   const label=d.key==='main'?'CHÍNH':d.key.toUpperCase();ctx.font='bold 10px Arial';ctx.textAlign='center';const tw=ctx.measureText(label).width;ctx.fillStyle='white';ctx.fillRect(m[0]-tw/2-5,m[1]-10,tw+10,19);ctx.fillStyle='#7b390b';ctx.fillText(label,m[0],m[1]+3);
+  }
+ }
+}
+// Mark the open passage on the floor in plan mode and in 3D.
+{
+ const px=passage.x, pw=passage.w, t=Math.min(1,Math.max(0,(parseFloat(values.passagePos)||0)/100));
+ const livingR=roomData('living'), scaleW=pw/(livingR.w||8);
+ const openingW=Math.min(pw*.9,(num(values.passageW)||1.2)*scaleW);
+ const a=px+Math.max(0,Math.min(pw-openingW,pw*t-openingW/2)), b=a+openingW;
+ let A=P(a,passage.wallY,0),B=P(b,passage.wallY,0);
+ ctx.beginPath();ctx.moveTo(...A);ctx.lineTo(...B);ctx.strokeStyle='#0d876b';ctx.lineWidth=topDown?9:5;ctx.stroke();
+ let mid=P((a+b)/2,passage.wallY,0);ctx.font='bold 11px Arial';ctx.textAlign='center';ctx.fillStyle='#176851';ctx.fillText('LỐI ĐI',mid[0],mid[1]+(topDown?18:13));
+}
+ctx.textAlign='left';ctx.fillStyle='#536d80';ctx.font='12px Arial';ctx.fillText('Sân: xanh nhạt  •  Hiên: vàng nhạt  •  Lối đi mở: XANH LÁ  •  Cửa: CAM  •  Cửa sổ: XANH',15,H-15)}
+function update(){calculate();draw();localStorage.setItem('house3d-data',JSON.stringify(values));let measured=config.filter(([id])=>roomData(id).l&&roomData(id).w).length;$('modelNote').textContent=`Phòng khách có cửa chính, ba cửa vào Phòng 1–3 và lối đi xuống bếp. Vách phòng khách/bếp nằm ngang giữa Phòng 3 và có lối đi mở (phần sơn trừ ở cả hai mặt). Phòng 1 đã được đặt nhô ra phía sân trước, ngang với mép ngoài hiên nhà (mặc định cùng 2 m). Sân ở ngoài hiên. Phần xám phía dưới minh họa lớp gạch ốp; phần sáng phía trên minh họa khu vực sơn. Đã có kích thước dài/rộng của ${measured}/8 khu vực. Sơ đồ được dựng theo bố cục bản vẽ tay; khi thiếu số đo, vị trí và tỷ lệ chỉ mang tính minh họa. Hiên/sân không được tính vào diện tích sơn nội thất. Cửa đi và cửa sổ hiển thị bằng ô cam/xanh có nhãn D1, D2, S1, S2; phần cửa trừ theo vùng giao với tường sơn. Kích thước phòng nhập vào dùng để tính sơn; hình khối đang tự cân chỉnh để giữ bố cục, chưa phải mô hình CAD chính xác.`}
+$('left').onclick=()=>{yaw-=Math.PI/9;draw()};$('right').onclick=()=>{yaw+=Math.PI/9;draw()};$('zoomin').onclick=()=>{zoom=Math.min(2.2,zoom*1.2);draw()};$('zoomout').onclick=()=>{zoom=Math.max(.55,zoom/1.2);draw()};$('top').onclick=()=>{topDown=true;draw()};$('iso').onclick=()=>{topDown=false;draw()};$('save').onclick=()=>{localStorage.setItem('house3d-data',JSON.stringify(values));alert('Đã lưu trên trình duyệt này. Để lưu ra máy, chọn Xuất dữ liệu JSON.')} ;$('export').onclick=()=>{let blob=new Blob([JSON.stringify({version:1,values,description:'Số đo nhà và phòng để dựng bản CAD và tính sơn'},null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='So_do_nha_va_dien_tich_son.json';a.click();URL.revokeObjectURL(u)};$('reset').onclick=()=>{if(confirm('Xóa tất cả các số đo đã nhập?')){values={};localStorage.removeItem('house3d-data');renderInputs();update()}};window.addEventListener('resize',draw);renderInputs();if(!values.wastePreview && values.waste){$('wastePreview').value=values.waste;}update();
+</script></body></html>
